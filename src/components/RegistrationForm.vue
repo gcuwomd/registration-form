@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="form" :model="form" label-width="80px">
+  <el-form ref="form" :model="form" label-position="top">
     <el-form-item label="学号">
       <el-input v-model="form.id" placeholder="请输入学号"></el-input>
     </el-form-item>
@@ -40,17 +40,48 @@
       <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
     </el-form-item>
     <el-form-item label="是否服从调剂">
-      <el-switch v-model="form.adjust"></el-switch>
+      <el-space>
+        <el-switch v-model="form.adjust"></el-switch>
+        <span>服从部门调剂被录取的概率更大哦~</span>
+      </el-space>
     </el-form-item>
     <el-form-item label="自我介绍">
-      <el-input type="textarea" v-model="form.introduction"></el-input>
+      <el-input
+        type="textarea"
+        v-model="form.introduction"
+        minlength="10"
+        placeholder="用不少于10个字符的一段话介绍一下自己吧~"
+      ></el-input>
     </el-form-item>
-    <!-- <el-form-item>
-      <el-button type="primary" @click="onSubmit">立即创建</el-button>
-      <el-button>取消</el-button>
-    </el-form-item> -->
+    <el-form-item
+      label="上传你的照片可以加深我们对你的印象哦~"
+      :show-label="false"
+    >
+      <el-space vertical>
+        <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
+          <el-button>上传文件</el-button>
+        </el-upload>
+      </el-space>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        style="width: 100%"
+        @click="onSubmit"
+        type="primary"
+        :disabled="btnDisabled"
+        >提交</el-button
+      >
+    </el-form-item>
   </el-form>
 </template>
+
+<style scoped>
+.el-select,
+.el-input_inner {
+  width: 100%;
+}
+</style>
+
 <script>
 export default {
   data() {
