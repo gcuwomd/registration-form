@@ -1,12 +1,14 @@
  export interface IApply {
-  id: number | null;
-  name: string | null;
-  college: string | null;
-  firstIntention: string | null;
-  secondIntention: string | null;
-  phone: number | null;
-  introduction: string | null;
-  picture?: string | null;
+  id: null|number,
+  name: null|string,
+  sex: null|string,
+  college: null|string,
+  major: null|boolean,
+  firstIntention: null|string,
+  secondIntention: null|string,
+  phone: null|number,
+  adjust: false,
+  introduction: null|string,
 }
  export interface IOption {
   value: number;

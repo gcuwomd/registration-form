@@ -17,8 +17,14 @@ import RegistrationForm from "./components/RegistrationForm.vue"
 </template>
 
 <style scoped>
+
 .container {
   padding: 10px 20px;
+  
+  border-radius: 12px;
+    background-color: rgba(255,255,255,.2);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 10px #333;
 }
 h2 {
     display: flex;
