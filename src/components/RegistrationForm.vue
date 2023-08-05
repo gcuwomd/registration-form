@@ -1,8 +1,31 @@
-<template>
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import { IApply } from "../types/index";
+import { collegeOptions, sectionOptions } from "../assets/ts/options";
+const collegeOption = reactive(collegeOptions);
+const firstSectionOption = reactive(sectionOptions);
+const secondSectionOption = reactive(sectionOptions);
+
+const form: IApply = reactive({
+  id: null,
+  name: null,
+  sex: null,
+  college: null,
+  major: null,
+  firstIntention: null,
+  secondIntention: null,
+  phone: null,
+  adjust: false,
+  introduction: null,
+});
+
+</script>
+
+<template >
   <el-form ref="form" :model="form" label-position="top">
-    <el-form-item label="学号">
+    <el-form-item label="学号" prop="id">
       <el-input v-model="form.id" placeholder="请输入学号"></el-input>
-    </el-form-item>
+    </el-form-item>  
     <el-form-item label="姓名">
       <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
     </el-form-item>
@@ -14,8 +37,12 @@
     </el-form-item>
     <el-form-item label="学院">
       <el-select v-model="form.college" placeholder="请选择学院">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
+        <el-option
+          v-for="option in collegeOptions"
+          :Key="option.value"
+          :label="option.label"
+          :value="option.value"
+        ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="专业">
@@ -23,8 +50,12 @@
     </el-form-item>
     <el-form-item label="第一意向部门">
       <el-select v-model="form.firstIntention" placeholder="请选择第一意向部门">
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
+        <el-option
+          v-for="option in firstSectionOption"
+          :Key="option.value"
+          :label="option.label"
+          :value="option.value"
+        ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="第二意向部门">
@@ -32,10 +63,15 @@
         v-model="form.secondIntention"
         placeholder="请选择第二意向部门"
       >
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
+        <el-option
+          v-for="option in secondSectionOption"
+          :Key="option.value"
+          :label="option.label"
+          :value="option.value"
+        ></el-option>
       </el-select>
     </el-form-item>
+
     <el-form-item label="联系电话">
       <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
     </el-form-item>
@@ -76,35 +112,8 @@
 </template>
 
 <style scoped>
-.el-select,
-.el-input_inner {
+.el-input,
+.el-select {
   width: 100%;
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      form: {
-        id: null,
-        name: null,
-        sex: null,
-        college: null,
-        major: null,
-        firstIntention: null,
-        secondIntention: null,
-        phone: null,
-        adjust: false,
-        introduction: null,
-      },
-    };
-  },
-  methods: {
-    onSubmit() {
-      console.log("submit!");
-    },
-  },
-};
-</script>
-
