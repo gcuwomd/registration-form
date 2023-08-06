@@ -1,7 +1,7 @@
 <template>
   
-  <el-form ref="form" :model="form" label-width="80px">
-    <el-form-item label="学号"  id="zi">
+  <el-form ref="forms" :model="form" label-width="80px">
+    <el-form-item label="学号"  >
       <el-input v-model="form.id" placeholder="请输入学号"></el-input>
     </el-form-item>
     <el-form-item label="姓名" >
@@ -48,7 +48,8 @@
   </el-form>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+
+import { reactive, } from "vue";
 import { IApply, IOption } from "../types/index.ts";
 
 
@@ -110,7 +111,7 @@ import { IApply, IOption } from "../types/index.ts";
 ];
   
     
-   const   form:IApply=reactive( {
+   const  form:IApply=reactive( {
         id: null,
         name: null,
         sex: null,
