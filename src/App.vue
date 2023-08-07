@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import RegistrationForm from "./components/RegistrationForm.vue"
+
+
 </script>
 
 <template>
+   
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    
   <div class="container">
     <h2>
       <span>网信委招新报名系统</span>
+      
       <img src="./assets/logo.png" alt="">
     </h2>
 
