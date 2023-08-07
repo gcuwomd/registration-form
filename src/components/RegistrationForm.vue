@@ -2,10 +2,10 @@
 import { reactive, ref } from "vue";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
+import { rules } from "../assets/ts/rules"
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-
 const form: IApply = reactive({
   id: null,
   name: null,
@@ -18,24 +18,22 @@ const form: IApply = reactive({
   adjust: false,
   introduction: null,
 });
-
 </script>
-
 <template >
-  <el-form ref="form" :model="form" label-position="top">
+  <el-form ref="forms" :model="form" :rules="rules" label-position="top">
     <el-form-item label="学号" prop="id">
       <el-input v-model="form.id" placeholder="请输入学号"></el-input>
     </el-form-item>  
-    <el-form-item label="姓名">
+    <el-form-item label="姓名" prop="name">
       <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
     </el-form-item>
-    <el-form-item label="性别">
+    <el-form-item label="性别" prop="sex">
       <el-radio-group v-model="form.sex">
         <el-radio label="男"></el-radio>
         <el-radio label="女"></el-radio>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="学院">
+    <el-form-item label="学院" prop="college">
       <el-select v-model="form.college" placeholder="请选择学院">
         <el-option
           v-for="option in collegeOptions"
@@ -45,10 +43,10 @@ const form: IApply = reactive({
         ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="专业">
+    <el-form-item label="专业" prop="major">
       <el-input v-model="form.major" placeholder="请输入专业"></el-input>
     </el-form-item>
-    <el-form-item label="第一意向部门">
+    <el-form-item label="第一意向部门" prop="firstIntention">
       <el-select v-model="form.firstIntention" placeholder="请选择第一意向部门">
         <el-option
           v-for="option in firstSectionOption"
@@ -58,7 +56,7 @@ const form: IApply = reactive({
         ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="第二意向部门">
+    <el-form-item label="第二意向部门" prop="secondIntention">
       <el-select
         v-model="form.secondIntention"
         placeholder="请选择第二意向部门"
@@ -72,7 +70,7 @@ const form: IApply = reactive({
       </el-select>
     </el-form-item>
 
-    <el-form-item label="联系电话">
+    <el-form-item label="联系电话" prop="phone">
       <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
     </el-form-item>
     <el-form-item label="是否服从调剂">
@@ -81,7 +79,7 @@ const form: IApply = reactive({
         <span>服从部门调剂被录取的概率更大哦~</span>
       </el-space>
     </el-form-item>
-    <el-form-item label="自我介绍">
+    <el-form-item label="自我介绍" prop="introduction">
       <el-input
         type="textarea"
         v-model="form.introduction"
@@ -111,9 +109,12 @@ const form: IApply = reactive({
   </el-form>
 </template>
 
-<style scoped>
+<style>
 .el-input,
 .el-select {
   width: 100%;
 }
+/* el-form-item_label {
+  color: rgb(12, 12, 12);
+} */
 </style>
