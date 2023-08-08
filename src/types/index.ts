@@ -9,6 +9,7 @@ export interface IApply {
   phone: null|number,
   adjust: false,
   introduction: null|string,
+  
 }
  export interface IOption {
   value: string;

@@ -6,7 +6,12 @@ import { rules } from "../assets/ts/rules"
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-const form: IApply = reactive({
+const photoFile = ref(null);
+const onChange = (file: any) => {
+  photoFile.value = file.raw;
+}
+
+ const form: IApply = reactive({
   id: null,
   name: null,
   sex: null,
@@ -18,6 +23,9 @@ const form: IApply = reactive({
   adjust: false,
   introduction: null,
 });
+
+   
+   
 </script>
 <template >
   <el-form ref="forms" :model="form" :rules="rules" label-position="top">
@@ -53,6 +61,7 @@ const form: IApply = reactive({
           :Key="option.value"
           :label="option.label"
           :value="option.value"
+          
         ></el-option>
       </el-select>
     </el-form-item>
@@ -60,12 +69,15 @@ const form: IApply = reactive({
       <el-select
         v-model="form.secondIntention"
         placeholder="请选择第二意向部门"
+        
       >
         <el-option
           v-for="option in secondSectionOption"
           :Key="option.value"
-          :label="option.label"
+          :label="option.label  "
           :value="option.value"
+          :disabled="option.value == form.firstIntention"
+          
         ></el-option>
       </el-select>
     </el-form-item>
@@ -95,6 +107,7 @@ const form: IApply = reactive({
         <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
           <el-button>上传文件</el-button>
         </el-upload>
+        <a v-if="photoFile" :href="URL.createObjectURL(photoFile)">{{ photoFile.name }}</a>
       </el-space>
     </el-form-item>
     <el-form-item>

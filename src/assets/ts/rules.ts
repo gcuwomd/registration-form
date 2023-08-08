@@ -1,5 +1,6 @@
 import { reactive, ref } from "vue";
 import type { FormRules, FormInstance } from "element-plus";
+
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 export const rules = reactive<FormRules>({
@@ -58,8 +59,9 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-      message: "请选择你的第二意向部门",
+      
       trigger: ["blur", "change"],
+     
     },
   ],
   phone: [
@@ -105,6 +107,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+
 //清除校验效果并且清空表单参数的函数
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -114,3 +117,4 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
   value: `${idx + 1}`,
   label: `${idx + 1}`,
 }));
+
