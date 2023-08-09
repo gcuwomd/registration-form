@@ -1,8 +1,6 @@
 import { reactive, ref } from "vue";
-import type { FormRules, FormInstance } from "element-plus";
-
-const formSize = ref("default");
-const ruleFormRef = ref<FormInstance>();
+import type { FormRules } from "element-plus";
+import { IApply } from "../../types";
 export const rules = reactive<FormRules>({
   id: [
     {
@@ -94,15 +92,16 @@ export const rules = reactive<FormRules>({
     },
   ],
 });
-function onSubmit(formName) {
-  this.$refs[formName].validate((valid) => {
-    if (valid) {
-      console.log("submit!");
-    } else {
-      console.log("error submit!");
-    }
-  });
-}
+
+// function onSubmit() {
+//   this.$refs.form.validate((valid) => {
+//     if (valid) {
+//       console.log("submit!");
+//     } else {
+//       console.log("error submit!");
+//     }
+//   });
+// }
 // const onSubmit = async (formEl: FormInstance | undefined) => {
 //   if (!formEl) return;
 //   await formEl.validate((valid, fields) => {

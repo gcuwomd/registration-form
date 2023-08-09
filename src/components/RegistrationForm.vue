@@ -1,28 +1,3 @@
-<script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { IApply } from "../types/index";
-import { collegeOptions, sectionOptions } from "../assets/ts/options";
-import { rules } from "../assets/ts/rules";
-const collegeOption = reactive(collegeOptions);
-const firstSectionOption = reactive(sectionOptions);
-const secondSectionOption = reactive(sectionOptions);
-const photoFile = ref(null);
-const onChange = (file: any) => {
-  photoFile.value = file.raw;
-};
-
-const form: IApply = reactive({
-  id: null,
-  username: null,
-  gender: null,
-  college: null,
-  major: null,
-  firstIntention: null,
-  secondIntention: null,
-  phone: null,
-  introduction: null,
-});
-</script>
 <template >
   <el-form ref="forms" :model="form" :rules="rules" label-position="top">
     <el-form-item label="学号" prop="id">
@@ -103,7 +78,7 @@ const form: IApply = reactive({
     <el-form-item>
       <el-button
         style="width: 100%"
-        @click="onSubmit(forms)"
+        @click="onSubmit()"
         type="primary"
         :disabled="btnDisabled"
         >提交</el-button
@@ -111,6 +86,97 @@ const form: IApply = reactive({
     </el-form-item>
   </el-form>
 </template>
+
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import type { FormInstance} from 'element-plus'
+import { IApply } from "../types/index";
+import { collegeOptions, sectionOptions } from "../assets/ts/options";
+import { rules } from "../assets/ts/rules";
+const formSize = ref('default');
+const forms = ref<FormInstance>();
+const form = reactive<IApply>({
+id: null,
+  username: null,
+  gender: null,
+  college: null,
+  major: null,
+  firstIntention: null,
+  secondIntention: null,
+  phone: null,
+  introduction: null,
+})
+const collegeOption = reactive(collegeOptions);
+const firstSectionOption = reactive(sectionOptions);
+const secondSectionOption = reactive(sectionOptions);
+const photoFile = ref(null);
+const onChange = (file: any) => {
+  photoFile.value = file.raw;
+};
+const onSubmit = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid:any, fields:any) => {
+    if (valid) {
+      // 校验成功
+      console.log("submit!");
+    } else {
+      // 校验失败
+      console.log("error submit!", fields);
+    }
+  });
+};
+// function onSubmit() {
+//   forms.validate((valid : any) => {
+//     if (valid) {
+//       let that = this;
+//       that.$axios({
+//         method : 'post',
+//         url : /user/register,
+//         formdata: {
+//           gender :form.gender,
+//           phone = that.phone,
+//           college = that.college,
+//           major = that.major,
+//           introduction = that.introduction,
+//           id = that.id,
+//           username = that.username,
+//           volunteer = {
+//             level = that.level,
+//             Volunteer = that.Volunteer
+//           }
+//         }
+//       }).then((res : any) => {
+//         alert("报名成功！");
+//       })
+//     } else {
+//       console.log("error submit!");
+//     }
+//   }
+// }
+  // this.$refs.form.validate((valid : any) => {
+  //   if (valid) {
+  //     let volunteer = {
+  //       level,
+  //       Volunteer,
+  //     }
+  //     const formdata = {
+  //       gender,
+  //       phone,
+  //       college,
+  //       major,
+  //       introduction,
+  //       id,
+  //       username,
+  //       volunteer
+  //     };
+  //     axiosInst.post("/user/register",formdata).then((res) => {
+  //       alert("报名成功！");
+  //     })
+  //   } else {
+  //     console.log("error submit!");
+  //   }
+  // });
+</script>
 
 <style>
 .el-input,
