@@ -4,12 +4,12 @@ import { IApply,  } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
 
-import {  UploadFileInfo,useMessage  } from "naive-ui";
+import {  UploadFileInfo, useMessage  } from "naive-ui";
 import { compressAccurately } from "image-conversion";
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-const photoFile = ref(null);
+
 
 let picture: string = "";
 
