@@ -100,7 +100,7 @@ const form: IApply = reactive({
     <el-form-item>
       <el-button
         style="width: 100%"
-        @click="onSubmit"
+        @click="onSubmit(forms)"
         type="primary"
         :disabled="btnDisabled"
         >提交</el-button

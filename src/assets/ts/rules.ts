@@ -93,24 +93,33 @@ export const rules = reactive<FormRules>({
     },
   ],
 });
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      // 校验成功
+function onSubmit(formName) {
+  this.$refs[formName].validate((valid) => {
+    if(valid){
       console.log("submit!");
     } else {
-      // 校验失败
-      console.log("error submit!", fields);
+      console.log("error submit!");
     }
-  });
-};
+  })
+}
+// const onSubmit = async (formEl: FormInstance | undefined) => {
+//   if (!formEl) return;
+//   await formEl.validate((valid, fields) => {
+//     if (valid) {
+//       // 校验成功
+//       console.log("submit!");
+//     } else {
+//       // 校验失败
+//       console.log("error submit!", fields);
+//     }
+//   });
+// };
 //清除校验效果并且清空表单参数的函数
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-  value: `${idx + 1}`,
-  label: `${idx + 1}`,
-}));
+// const resetForm = (formEl: FormInstance | undefined) => {
+//   if (!formEl) return;
+//   formEl.resetFields();
+// };
+// const options = Array.from({ length: 10000 }).map((_, idx) => ({
+//   value: `${idx + 1}`,
+//   label: `${idx + 1}`,
+// }));
