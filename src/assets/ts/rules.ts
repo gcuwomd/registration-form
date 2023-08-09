@@ -18,14 +18,14 @@ export const rules = reactive<FormRules>({
       trigger: "blur",
     },
   ],
-  name: [
+  username: [
     {
       required: true,
       message: "请输入姓名",
       trigger: "blur",
     },
   ],
-  sex: [
+  gender: [
     {
       required: true,
       message: "请选择性别",
@@ -59,7 +59,7 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-      
+
       trigger: ["blur", "change"],
      
     },
@@ -95,26 +95,29 @@ export const rules = reactive<FormRules>({
     },
   ],
 });
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+function onSubmit(formName) {
+  this.$refs[formName].validate((valid) => {
     if (valid) {
-      // 校验成功
       console.log("submit!");
     } else {
-      // 校验失败
-      console.log("error submit!", fields);
+      console.log("error submit!");
     }
   });
 };
+export function upload(){
 
+
+
+
+
+}
 //清除校验效果并且清空表单参数的函数
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-  value: `${idx + 1}`,
-  label: `${idx + 1}`,
-}));
+// const resetForm = (formEl: FormInstance | undefined) => {
+//   if (!formEl) return;
+//   formEl.resetFields();
+// };
+// const options = Array.from({ length: 10000 }).map((_, idx) => ({
+//   value: `${idx + 1}`,
+//   label: `${idx + 1}`,
+// }));
 

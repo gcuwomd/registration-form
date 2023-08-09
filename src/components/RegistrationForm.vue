@@ -1,42 +1,81 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { IApply } from "../types/index";
+import { IApply,  } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
-import { rules } from "../assets/ts/rules"
+import { rules } from "../assets/ts/rules";
+
+import {  UploadFileInfo,useMessage  } from "naive-ui";
+import { compressAccurately } from "image-conversion";
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
 const photoFile = ref(null);
-const onChange = (file: any) => {
-  photoFile.value = file.raw;
-}
 
- const form: IApply = reactive({
+let picture: string = "";
+
+
+const form: IApply = reactive({
   id: null,
-  name: null,
-  sex: null,
+  username: null,
+  gender: null,
   college: null,
   major: null,
   firstIntention: null,
   secondIntention: null,
   phone: null,
-  adjust: false,
   introduction: null,
 });
 
-   
-   
+function onChange(options: {
+  file: UploadFileInfo;
+  fileList: Array<UploadFileInfo>;
+}) {
+  if (options.fileList.length !== 0) {
+    const srcFile: any = options.fileList[0].file;
+    if (srcFile.size / 1024 > 1024) {
+      compressAccurately(srcFile, {
+        size: 1024,
+        accuracy: 0.9,
+        type: srcFile.type,
+      }).then((res) => {
+        toBase64(res).then((base64: any) => {
+          picture = base64;
+        });
+      });
+    } else {
+      toBase64(srcFile).then((res: any) => {
+        picture = res;
+      });
+    }
+  } else {
+    picture = "";
+  }
+}
+/**
+ 检查上传照片的格式
+ */
+function checkFileType(data: {
+  file: UploadFileInfo;
+  fileList: Array<UploadFileInfo>;
+}) {
+  const fileType: string | undefined = data.file.file?.type;
+  if (fileType !== "image/jpeg" && fileType !== "image/png") {
+    message.error("只支持上传jpg或者png格式的照片哦~");
+    return false;
+  }
+  return true;
+}
 </script>
 <template >
   <el-form ref="forms" :model="form" :rules="rules" label-position="top">
     <el-form-item label="学号" prop="id">
       <el-input v-model="form.id" placeholder="请输入学号"></el-input>
-    </el-form-item>  
-    <el-form-item label="姓名" prop="name">
-      <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
     </el-form-item>
-    <el-form-item label="性别" prop="sex">
-      <el-radio-group v-model="form.sex">
+    <el-form-item label="姓名" prop="username">
+      <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+    </el-form-item>
+    <el-form-item label="性别" prop="gender">
+      <el-radio-group v-model="form.gender">
         <el-radio label="男"></el-radio>
         <el-radio label="女"></el-radio>
       </el-radio-group>
@@ -61,7 +100,7 @@ const onChange = (file: any) => {
           :Key="option.value"
           :label="option.label"
           :value="option.value"
-          
+          :disabled="option.value == form.secondIntention"
         ></el-option>
       </el-select>
     </el-form-item>
@@ -69,27 +108,19 @@ const onChange = (file: any) => {
       <el-select
         v-model="form.secondIntention"
         placeholder="请选择第二意向部门"
-        
       >
         <el-option
           v-for="option in secondSectionOption"
           :Key="option.value"
-          :label="option.label  "
+          :label="option.label"
           :value="option.value"
           :disabled="option.value == form.firstIntention"
-          
         ></el-option>
       </el-select>
     </el-form-item>
 
     <el-form-item label="联系电话" prop="phone">
       <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
-    </el-form-item>
-    <el-form-item label="是否服从调剂">
-      <el-space>
-        <el-switch v-model="form.adjust"></el-switch>
-        <span>服从部门调剂被录取的概率更大哦~</span>
-      </el-space>
     </el-form-item>
     <el-form-item label="自我介绍" prop="introduction">
       <el-input
@@ -105,15 +136,14 @@ const onChange = (file: any) => {
     >
       <el-space vertical>
         <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
-          <el-button>上传文件</el-button>
+          <el-button @click="upload()">上传文件</el-button>
         </el-upload>
-        <a v-if="photoFile" :href="URL.createObjectURL(photoFile)">{{ photoFile.name }}</a>
       </el-space>
     </el-form-item>
     <el-form-item>
       <el-button
         style="width: 100%"
-        @click="onSubmit"
+        @click="onSubmit(forms)"
         type="primary"
         :disabled="btnDisabled"
         >提交</el-button
@@ -127,7 +157,4 @@ const onChange = (file: any) => {
 .el-select {
   width: 100%;
 }
-/* el-form-item_label {
-  color: rgb(12, 12, 12);
-} */
 </style>

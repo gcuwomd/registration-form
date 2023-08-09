@@ -21,11 +21,11 @@ body {
   /* min-height: 100vh; */
   background-image: linear-gradient(
     125deg,
-    #c6ddf3,
-    #c2efd5,
-    #c2e4fa,
-    #edd8f6,
-    #f3def0
+    #d9e6f1,
+    #dff8e9,
+    #dcedf9,
+    #f5edf8,
+    #faf0f8
   );
   background-size: 400%;
   animation: bgmove 20s;
