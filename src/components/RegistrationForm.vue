@@ -78,7 +78,7 @@
     <el-form-item>
       <el-button
         style="width: 100%"
-        @click="onSubmit()"
+        @click="onSubmit(forms)"
         type="primary"
         :disabled="btnDisabled"
         >提交</el-button
@@ -89,14 +89,14 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import type { FormInstance} from 'element-plus'
+import type { FormInstance } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
-const formSize = ref('default');
+const formSize = ref("default");
 const forms = ref<FormInstance>();
 const form = reactive<IApply>({
-id: null,
+  id: null,
   username: null,
   gender: null,
   college: null,
@@ -105,7 +105,7 @@ id: null,
   secondIntention: null,
   phone: null,
   introduction: null,
-})
+});
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
@@ -115,9 +115,24 @@ const onChange = (file: any) => {
 };
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid:any, fields:any) => {
+  await formEl.validate((valid: any, fields: any) => {
     if (valid) {
       // 校验成功
+      // forms.$axios({
+      //   method: "post",
+      //   url: /user/eegirrst,
+      //   formdata: {
+      //     gender: form.gender,
+      //     phone: form.phone,
+      //     college: form.college,
+      //     major: form.major,
+      //     introduction: form.introduction,
+      //     id: form.id,
+      //     username: form.username,
+      //   },
+      // }).then((res : any) => {
+      //   alert("报名成功！");
+      // })
       console.log("submit!");
     } else {
       // 校验失败
@@ -153,29 +168,29 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
 //     }
 //   }
 // }
-  // this.$refs.form.validate((valid : any) => {
-  //   if (valid) {
-  //     let volunteer = {
-  //       level,
-  //       Volunteer,
-  //     }
-  //     const formdata = {
-  //       gender,
-  //       phone,
-  //       college,
-  //       major,
-  //       introduction,
-  //       id,
-  //       username,
-  //       volunteer
-  //     };
-  //     axiosInst.post("/user/register",formdata).then((res) => {
-  //       alert("报名成功！");
-  //     })
-  //   } else {
-  //     console.log("error submit!");
-  //   }
-  // });
+// this.$refs.form.validate((valid : any) => {
+//   if (valid) {
+//     let volunteer = {
+//       level,
+//       Volunteer,
+//     }
+//     const formdata = {
+//       gender,
+//       phone,
+//       college,
+//       major,
+//       introduction,
+//       id,
+//       username,
+//       volunteer
+//     };
+//     axiosInst.post("/user/register",formdata).then((res) => {
+//       alert("报名成功！");
+//     })
+//   } else {
+//     console.log("error submit!");
+//   }
+// });
 </script>
 
 <style>

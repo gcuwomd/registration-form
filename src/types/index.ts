@@ -13,5 +13,4 @@ export interface IApply {
  export interface IOption {
   value: string;
   label: string;
-  Volunteer: string;
 }

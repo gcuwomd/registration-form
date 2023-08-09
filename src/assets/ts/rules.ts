@@ -5,10 +5,11 @@ export const rules = reactive<FormRules>({
   id: [
     {
       required: true,
-      validator(rule: any, value: string) {
+      validator(rules: any, value: string) {
+        const accountRegex = /^\d{12}$/;
         if (!value) {
           return new Error("请输入学号");
-        } else if (value.length !== 12) {
+        }else if (!accountRegex.test(value)) {
           return new Error("请输入正确的学号");
         }
         return true;
@@ -49,7 +50,6 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-      message: "请选择你的第一意向部门",
       trigger: ["blur", "change"],
     },
   ],
@@ -57,7 +57,6 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-
       trigger: ["blur", "change"],
     },
   ],
