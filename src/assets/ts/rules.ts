@@ -58,6 +58,7 @@ export const rules = reactive<FormRules>({
       type: "string",
       required: true,
       trigger: ["blur", "change"],
+     
     },
   ],
   phone: [
@@ -91,34 +92,3 @@ export const rules = reactive<FormRules>({
     },
   ],
 });
-
-// function onSubmit() {
-//   this.$refs.form.validate((valid) => {
-//     if (valid) {
-//       console.log("submit!");
-//     } else {
-//       console.log("error submit!");
-//     }
-//   });
-// }
-// const onSubmit = async (formEl: FormInstance | undefined) => {
-//   if (!formEl) return;
-//   await formEl.validate((valid, fields) => {
-//     if (valid) {
-//       // 校验成功
-//       console.log("submit!");
-//     } else {
-//       // 校验失败
-//       console.log("error submit!", fields);
-//     }
-//   });
-// };
-//清除校验效果并且清空表单参数的函数
-// const resetForm = (formEl: FormInstance | undefined) => {
-//   if (!formEl) return;
-//   formEl.resetFields();
-// };
-// const options = Array.from({ length: 10000 }).map((_, idx) => ({
-//   value: `${idx + 1}`,
-//   label: `${idx + 1}`,
-// }));

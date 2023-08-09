@@ -68,11 +68,8 @@
     >
       <el-space vertical>
         <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
-          <el-button>上传文件</el-button>
+          <el-button @click="upload()">上传文件</el-button>
         </el-upload>
-        <a v-if="photoFile" :href="URL.createObjectURL(photoFile)">{{
-          photoFile.name
-        }}</a>
       </el-space>
     </el-form-item>
     <el-form-item>
@@ -93,6 +90,9 @@ import type { FormInstance } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
+import {  UploadFileInfo, useMessage  } from "naive-ui";
+import { compressAccurately } from "image-conversion";
+let picture: string = "";
 const formSize = ref("default");
 const forms = ref<FormInstance>();
 const form = reactive<IApply>({
@@ -110,9 +110,46 @@ const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
 const photoFile = ref(null);
-const onChange = (file: any) => {
-  photoFile.value = file.raw;
-};
+function onChange(options: {
+  file: UploadFileInfo;
+  fileList: Array<UploadFileInfo>;
+}) {
+  if (options.fileList.length !== 0) {
+    const srcFile: any = options.fileList[0].file;
+    if (srcFile.size / 1024 > 1024) {
+      compressAccurately(srcFile, {
+        size: 1024,
+        accuracy: 0.9,
+        type: srcFile.type,
+      }).then((res) => {
+        toBase64(res).then((base64: any) => {
+          picture = base64;
+        });
+      });
+    } else {
+      toBase64(srcFile).then((res: any) => {
+        picture = res;
+      });
+    }
+  } else {
+    picture = "";
+  }
+}
+/**
+ 检查上传照片的格式
+ */
+function checkFileType(data: {
+  file: UploadFileInfo;
+  fileList: Array<UploadFileInfo>;
+}) {
+  const fileType: string | undefined = data.file.file?.type;
+  if (fileType !== "image/jpeg" && fileType !== "image/png") {
+    message.error("只支持上传jpg或者png格式的照片哦~");
+    return false;
+  }
+  return true;
+}
+
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid: any, fields: any) => {
@@ -140,57 +177,16 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
     }
   });
 };
-// function onSubmit() {
-//   forms.validate((valid : any) => {
-//     if (valid) {
-//       let that = this;
-//       that.$axios({
-//         method : 'post',
-//         url : /user/register,
-//         formdata: {
-//           gender :form.gender,
-//           phone = that.phone,
-//           college = that.college,
-//           major = that.major,
-//           introduction = that.introduction,
-//           id = that.id,
-//           username = that.username,
-//           volunteer = {
-//             level = that.level,
-//             Volunteer = that.Volunteer
-//           }
-//         }
-//       }).then((res : any) => {
-//         alert("报名成功！");
-//       })
-//     } else {
-//       console.log("error submit!");
-//     }
-//   }
-// }
-// this.$refs.form.validate((valid : any) => {
-//   if (valid) {
-//     let volunteer = {
-//       level,
-//       Volunteer,
-//     }
-//     const formdata = {
-//       gender,
-//       phone,
-//       college,
-//       major,
-//       introduction,
-//       id,
-//       username,
-//       volunteer
-//     };
-//     axiosInst.post("/user/register",formdata).then((res) => {
-//       alert("报名成功！");
-//     })
-//   } else {
-//     console.log("error submit!");
-//   }
-// });
+//清除校验效果并且清空表单参数的函数
+// const resetForm = (formEl: FormInstance | undefined) => {
+//   if (!formEl) return;
+//   formEl.resetFields();
+// };
+// const options = Array.from({ length: 10000 }).map((_, idx) => ({
+//   value: `${idx + 1}`,
+//   label: `${idx + 1}`,
+// }));
+
 </script>
 
 <style>
