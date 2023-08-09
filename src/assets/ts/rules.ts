@@ -1,5 +1,6 @@
 import { reactive, ref } from "vue";
 import type { FormRules, FormInstance } from "element-plus";
+
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 export const rules = reactive<FormRules>({
@@ -17,14 +18,14 @@ export const rules = reactive<FormRules>({
       trigger: "blur",
     },
   ],
-  name: [
+  username: [
     {
       required: true,
       message: "请输入姓名",
       trigger: "blur",
     },
   ],
-  sex: [
+  gender: [
     {
       required: true,
       message: "请选择性别",
@@ -58,7 +59,7 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-      message: "请选择你的第二意向部门",
+
       trigger: ["blur", "change"],
     },
   ],
@@ -95,12 +96,12 @@ export const rules = reactive<FormRules>({
 });
 function onSubmit(formName) {
   this.$refs[formName].validate((valid) => {
-    if(valid){
+    if (valid) {
       console.log("submit!");
     } else {
       console.log("error submit!");
     }
-  })
+  });
 }
 // const onSubmit = async (formEl: FormInstance | undefined) => {
 //   if (!formEl) return;
