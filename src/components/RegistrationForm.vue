@@ -67,7 +67,15 @@
       :show-label="false"
     >
       <el-space vertical>
-        <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
+        <el-upload
+          ref="upload"
+          :on-exceed="onChange"
+          :data="uploadData"
+          action="http://43.139.117.216:8100/putPhoto"
+          accept=".jpeg,.png,.jpg,.bmp,.gif"
+          @before-upload="checkFileType"
+          :max="1"
+        >
           <el-button>上传文件</el-button>
         </el-upload>
       </el-space>
@@ -85,14 +93,22 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import type { FormInstance } from "element-plus";
+import { reactive, ref, defineProps } from "vue";
+import type {
+  FormInstance,
+  UploadInstance,
+  UploadProps,
+  UploadRawFile,
+} from "element-plus";
+import { genFileId } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
-import {baseAxios} from "../const";
+import { baseAxios } from "../const";
 const formSize = ref("default");
 const forms = ref<FormInstance>();
+const upload = ref<UploadInstance>();
+// const uploadData = ref({});
 const form = reactive<IApply>({
   id: null,
   username: null,
@@ -107,68 +123,50 @@ const form = reactive<IApply>({
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-const photoFile = ref(null);
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid: any, fields: any) => {
     if (valid) {
+      // 校验成功
       const volunteer = [
         {
-        level: "1",
-        volunteer: form.firstIntention
+          level: "1",
+          volunteer: form.firstIntention,
         },
         {
-        level: "2",
-        volunteer: form.secondIntention
-        }
-      ]
+          level: "2",
+          volunteer: form.secondIntention,
+        },
+      ];
       const formdata = {
-          id: form.id,
-          username: form.username,
-          introduction: form.introduction,
-          major: form.major,
-          college: form.college,
-          phone: form.phone,
-          gender: form.gender,
-          volunteer: volunteer
-        };
-      baseAxios.post("/user/register",formdata).then((res: any) => {
+        id: form.id,
+        username: form.username,
+        introduction: form.introduction,
+        major: form.major,
+        college: form.college,
+        phone: form.phone,
+        gender: form.gender,
+        volunteer: volunteer,
+      };
+      baseAxios.post("/user/register", formdata).then((res: any) => {
         const message = res.data.message;
         alert(message);
-      })
-      // 校验成功
-      // forms.$axios({
-      //   method: "post",
-      //   url: /user/eegirrst,
-      //   formdata: {
-      //     gender: form.gender,
-      //     phone: form.phone,
-      //     college: form.college,
-      //     major: form.major,
-      //     introduction: form.introduction,
-      //     id: form.id,
-      //     username: form.username,
-      //   },
-      // }).then((res : any) => {
-      //   alert("报名成功！");
-      // })
-      console.log("submit!");
+      });
     } else {
       // 校验失败
-      // console.log("error submit!", fields);
+      console.log("报名失败！", fields);
     }
   });
 };
-//清除校验效果并且清空表单参数的函数
-// const resetForm = (formEl: FormInstance | undefined) => {
-//   if (!formEl) return;
-//   formEl.resetFields();
-// };
-// const options = Array.from({ length: 10000 }).map((_, idx) => ({
-//   value: `${idx + 1}`,
-//   label: `${idx + 1}`,
-// }));
-
+const onChange: UploadProps["onExceed"] = (files: any) => {
+  upload.value!.clearFiles();
+  const file = files[0] as UploadRawFile;
+  file.uid = genFileId();
+  upload.value!.handleStart(file);
+};
+const uploadData = ref({
+  id: form.id,
+});
 </script>
 
 <style>

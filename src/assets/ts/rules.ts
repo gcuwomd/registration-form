@@ -6,10 +6,10 @@ export const rules = reactive<FormRules>({
     {
       required: true,
       validator(rules: any, value: string) {
-        const accountRegex = /^\d{12}$/;
+        const idRegex = /^\d{12}$/;
         if (!value) {
           return new Error("请输入学号");
-        }else if (!accountRegex.test(value)) {
+        }else if (!idRegex.test(value)) {
           return new Error("请输入正确的学号");
         }
         return true;
@@ -20,7 +20,15 @@ export const rules = reactive<FormRules>({
   username: [
     {
       required: true,
-      message: "请输入姓名",
+      validator(rules: any, value: string) {
+        const nameRegex = /^[\u4e00-\u9fa5]+$/;
+        if (!value) {
+          return new Error("请输入姓名");
+        }else if (!nameRegex.test(value)) {
+          return new Error("请输入正确的姓名");
+        }
+        return true;
+      },
       trigger: "blur",
     },
   ],
@@ -42,7 +50,15 @@ export const rules = reactive<FormRules>({
   major: [
     {
       required: true,
-      message: "请输入你的专业",
+      validator(rules: any, value: string) {
+        const majorRegex = /^[\u4e00-\u9fa5]+$/;
+        if (!value) {
+          return new Error("请输入专业");
+        }else if (!majorRegex.test(value)) {
+          return new Error("请输入正确的专业名称");
+        }
+        return true;
+      },
       trigger: "blur",
     },
   ],
