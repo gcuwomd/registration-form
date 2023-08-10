@@ -68,7 +68,7 @@
     >
       <el-space vertical>
         <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
-          <el-button @click="upload()">上传文件</el-button>
+          <el-button>上传文件</el-button>
         </el-upload>
       </el-space>
     </el-form-item>
@@ -90,9 +90,7 @@ import type { FormInstance } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
-import {  UploadFileInfo, useMessage  } from "naive-ui";
-import { compressAccurately } from "image-conversion";
-let picture: string = "";
+import {baseAxios} from "../const";
 const formSize = ref("default");
 const forms = ref<FormInstance>();
 const form = reactive<IApply>({
@@ -110,50 +108,34 @@ const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
 const photoFile = ref(null);
-function onChange(options: {
-  file: UploadFileInfo;
-  fileList: Array<UploadFileInfo>;
-}) {
-  if (options.fileList.length !== 0) {
-    const srcFile: any = options.fileList[0].file;
-    if (srcFile.size / 1024 > 1024) {
-      compressAccurately(srcFile, {
-        size: 1024,
-        accuracy: 0.9,
-        type: srcFile.type,
-      }).then((res) => {
-        toBase64(res).then((base64: any) => {
-          picture = base64;
-        });
-      });
-    } else {
-      toBase64(srcFile).then((res: any) => {
-        picture = res;
-      });
-    }
-  } else {
-    picture = "";
-  }
-}
-/**
- 检查上传照片的格式
- */
-function checkFileType(data: {
-  file: UploadFileInfo;
-  fileList: Array<UploadFileInfo>;
-}) {
-  const fileType: string | undefined = data.file.file?.type;
-  if (fileType !== "image/jpeg" && fileType !== "image/png") {
-    message.error("只支持上传jpg或者png格式的照片哦~");
-    return false;
-  }
-  return true;
-}
-
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid: any, fields: any) => {
     if (valid) {
+      const volunteer = [
+        {
+        level: "1",
+        volunteer: form.firstIntention
+        },
+        {
+        level: "2",
+        volunteer: form.secondIntention
+        }
+      ]
+      const formdata = {
+          id: form.id,
+          username: form.username,
+          introduction: form.introduction,
+          major: form.major,
+          college: form.college,
+          phone: form.phone,
+          gender: form.gender,
+          volunteer: volunteer
+        };
+      baseAxios.post("/user/register",formdata).then((res: any) => {
+        const message = res.data.message;
+        alert(message);
+      })
       // 校验成功
       // forms.$axios({
       //   method: "post",
@@ -173,7 +155,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       console.log("submit!");
     } else {
       // 校验失败
-      console.log("error submit!", fields);
+      // console.log("error submit!", fields);
     }
   });
 };
