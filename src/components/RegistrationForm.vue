@@ -4,8 +4,9 @@ import { IApply,  } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
 
-import {  UploadFileInfo, useMessage  } from "naive-ui";
-import { compressAccurately } from "image-conversion";
+
+import { compressAccurately ,} from "image-conversion";
+import { tagLight } from "naive-ui/es/tag/styles";
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
@@ -26,41 +27,51 @@ const form: IApply = reactive({
   introduction: null,
 });
 
-function onChange(options: {
-  file: UploadFileInfo;
-  fileList: Array<UploadFileInfo>;
-}) {
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+function onChange(options) {
   if (options.fileList.length !== 0) {
-    const srcFile: any = options.fileList[0].file;
+    const srcFile = options.fileList[0].file;
     if (srcFile.size / 1024 > 1024) {
       compressAccurately(srcFile, {
         size: 1024,
         accuracy: 0.9,
         type: srcFile.type,
       }).then((res) => {
-        toBase64(res).then((base64: any) => {
+        toBase64(res).then((base64) => {
           picture = base64;
         });
       });
     } else {
-      toBase64(srcFile).then((res: any) => {
+      toBase64(srcFile).then((res) => {
         picture = res;
       });
+      that.$axios({
+        method:'post',
+        url : /putPhoto,
+          data:{
+            file=options.fileList[0].file
+          }
+      })
     }
   } else {
     picture = "";
   }
 }
+
 /**
  检查上传照片的格式
  */
-function checkFileType(data: {
-  file: UploadFileInfo;
-  fileList: Array<UploadFileInfo>;
-}) {
-  const fileType: string | undefined = data.file.file?.type;
+function checkFileType(data) {
+  const fileType = data.file.file.type;
   if (fileType !== "image/jpeg" && fileType !== "image/png") {
-    message.error("只支持上传jpg或者png格式的照片哦~");
+    alert("只支持上传jpg或者png格式的照片哦~");
     return false;
   }
   return true;
@@ -136,7 +147,7 @@ function checkFileType(data: {
     >
       <el-space vertical>
         <el-upload @change="onChange" @before-upload="checkFileType" :max="1">
-          <el-button @click="upload()">上传文件</el-button>
+          <el-button>上传文件</el-button>
         </el-upload>
       </el-space>
     </el-form-item>
