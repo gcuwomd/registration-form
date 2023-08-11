@@ -1,82 +1,3 @@
-<script lang="ts" setup>
-import { reactive, ref } from "vue";
-import { IApply,  } from "../types/index";
-import { collegeOptions, sectionOptions } from "../assets/ts/options";
-import { rules } from "../assets/ts/rules";
-
-
-import { compressAccurately ,} from "image-conversion";
-import { tagLight } from "naive-ui/es/tag/styles";
-const collegeOption = reactive(collegeOptions);
-const firstSectionOption = reactive(sectionOptions);
-const secondSectionOption = reactive(sectionOptions);
-
-
-let picture: string = "";
-
-
-const form: IApply = reactive({
-  id: null,
-  username: null,
-  gender: null,
-  college: null,
-  major: null,
-  firstIntention: null,
-  secondIntention: null,
-  phone: null,
-  introduction: null,
-});
-
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-function onChange(options) {
-  if (options.fileList.length !== 0) {
-    const srcFile = options.fileList[0].file;
-    if (srcFile.size / 1024 > 1024) {
-      compressAccurately(srcFile, {
-        size: 1024,
-        accuracy: 0.9,
-        type: srcFile.type,
-      }).then((res) => {
-        toBase64(res).then((base64) => {
-          picture = base64;
-        });
-      });
-    } else {
-      toBase64(srcFile).then((res) => {
-        picture = res;
-      });
-      that.$axios({
-        method:'post',
-        url : /putPhoto,
-          data:{
-            file=options.fileList[0].file
-          }
-      })
-    }
-  } else {
-    picture = "";
-  }
-}
-
-/**
- 检查上传照片的格式
- */
-function checkFileType(data) {
-  const fileType = data.file.file.type;
-  if (fileType !== "image/jpeg" && fileType !== "image/png") {
-    alert("只支持上传jpg或者png格式的照片哦~");
-    return false;
-  }
-  return true;
-}
-</script>
 <template >
   <el-form ref="forms" :model="form" :rules="rules" label-position="top">
     <el-form-item label="学号" prop="id">
@@ -162,6 +83,148 @@ function checkFileType(data) {
     </el-form-item>
   </el-form>
 </template>
+
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
+import type { FormInstance } from "element-plus";
+import { IApply } from "../types/index";
+import { collegeOptions, sectionOptions } from "../assets/ts/options";
+import { rules } from "../assets/ts/rules";
+import {baseAxios} from "../const";
+import { compressAccurately ,} from "image-conversion";
+const formSize = ref("default");
+const forms = ref<FormInstance>();
+
+const collegeOption = reactive(collegeOptions);
+const firstSectionOption = reactive(sectionOptions);
+const secondSectionOption = reactive(sectionOptions);
+const photoFile = ref(null);
+et picture: string = "";
+
+
+const form: IApply = reactive({
+  id: null,
+  username: null,
+  gender: null,
+  college: null,
+  major: null,
+  firstIntention: null,
+  secondIntention: null,
+  phone: null,
+  introduction: null,
+});
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+function onChange(options) {
+  if (options.fileList.length !== 0) {
+    const srcFile = options.fileList[0].file;
+    if (srcFile.size / 1024 > 1024) {
+      compressAccurately(srcFile, {
+        size: 1024,
+        accuracy: 0.9,
+        type: srcFile.type,
+      }).then((res) => {
+        toBase64(res).then((base64) => {
+          picture = base64;
+        });
+      });
+    } else {
+      toBase64(srcFile).then((res) => {
+        picture = res;
+      });
+      that.$axios({
+        method:'post',
+        url : /putPhoto,
+          data:{
+            file=options.fileList[0].file
+          }
+      })
+    }
+  } else {
+    picture = "";
+  }
+}
+
+/**
+ 检查上传照片的格式
+ */
+function checkFileType(data) {
+  const fileType = data.file.file.type;
+  if (fileType !== "image/jpeg" && fileType !== "image/png") {
+    alert("只支持上传jpg或者png格式的照片哦~");
+    return false;
+  }
+  return true;
+}
+const onSubmit = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid: any, fields: any) => {
+    if (valid) {
+      const volunteer = [
+        {
+        level: "1",
+        volunteer: form.firstIntention
+        },
+        {
+        level: "2",
+        volunteer: form.secondIntention
+        }
+      ]
+      const formdata = {
+          id: form.id,
+          username: form.username,
+          introduction: form.introduction,
+          major: form.major,
+          college: form.college,
+          phone: form.phone,
+          gender: form.gender,
+          volunteer: volunteer
+        };
+      baseAxios.post("/user/register",formdata).then((res: any) => {
+        const message = res.data.message;
+        alert(message);
+      })
+      // 校验成功
+      // forms.$axios({
+      //   method: "post",
+      //   url: /user/eegirrst,
+      //   formdata: {
+      //     gender: form.gender,
+      //     phone: form.phone,
+      //     college: form.college,
+      //     major: form.major,
+      //     introduction: form.introduction,
+      //     id: form.id,
+      //     username: form.username,
+      //   },
+      // }).then((res : any) => {
+      //   alert("报名成功！");
+      // })
+      console.log("submit!");
+    } else {
+      // 校验失败
+      // console.log("error submit!", fields);
+    }
+  });
+};
+//清除校验效果并且清空表单参数的函数
+// const resetForm = (formEl: FormInstance | undefined) => {
+//   if (!formEl) return;
+//   formEl.resetFields();
+// };
+// const options = Array.from({ length: 10000 }).map((_, idx) => ({
+//   value: `${idx + 1}`,
+//   label: `${idx + 1}`,
+// }));
+
+</script>
 
 <style>
 .el-input,

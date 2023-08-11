@@ -1,16 +1,15 @@
 import { reactive, ref } from "vue";
-import type { FormRules, FormInstance } from "element-plus";
-
-const formSize = ref("default");
-const ruleFormRef = ref<FormInstance>();
+import type { FormRules } from "element-plus";
+import { IApply } from "../../types";
 export const rules = reactive<FormRules>({
   id: [
     {
       required: true,
-      validator(rule: any, value: string) {
+      validator(rules: any, value: string) {
+        const accountRegex = /^\d{12}$/;
         if (!value) {
           return new Error("请输入学号");
-        } else if (value.length !== 12) {
+        }else if (!accountRegex.test(value)) {
           return new Error("请输入正确的学号");
         }
         return true;
@@ -51,7 +50,6 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-      message: "请选择你的第一意向部门",
       trigger: ["blur", "change"],
     },
   ],
@@ -59,7 +57,6 @@ export const rules = reactive<FormRules>({
     {
       type: "string",
       required: true,
-
       trigger: ["blur", "change"],
      
     },
@@ -95,29 +92,3 @@ export const rules = reactive<FormRules>({
     },
   ],
 });
-function onSubmit(formName) {
-  this.$refs[formName].validate((valid) => {
-    if (valid) {
-      console.log("submit!");
-    } else {
-      console.log("error submit!");
-    }
-  });
-};
-export function upload(){
-
-
-
-
-
-}
-//清除校验效果并且清空表单参数的函数
-// const resetForm = (formEl: FormInstance | undefined) => {
-//   if (!formEl) return;
-//   formEl.resetFields();
-// };
-// const options = Array.from({ length: 10000 }).map((_, idx) => ({
-//   value: `${idx + 1}`,
-//   label: `${idx + 1}`,
-// }));
-

@@ -52,19 +52,18 @@ export const collegeOptions: Array<IOption> = [
 export const sectionOptions: Array<IOption> = [
   {
     label: "网站运维部",
-    value: "网站运维部",
-  },
-  {
-    label: "行政秘书部",
-    value: "行政秘书部",
-  },
-  {
-    label: "网络运维部",
-    value: "网络运维部",
+    value: "1",
   },
   {
     label: "信息化运维部",
-    value: "信息化运维部",
+    value: "2",
+  },
+  {
+    label: "网络运维部",
+    value: "3",
+  },
+  {
+    label: "行政秘书部",
+    value: "4",
   },
 ];
-export const secondSectionOptionFiltered:Array<IOption>= []
