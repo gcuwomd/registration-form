@@ -1,5 +1,5 @@
 export interface IApply {
-  id: null|number,
+  id: null|number|string,
   username: null|string,
   gender: null|string,
   college: null|string,
