@@ -1,6 +1,5 @@
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import type { FormRules } from "element-plus";
-import { IApply } from "../../types";
 export const rules = reactive<FormRules>({
   id: [
     {
@@ -81,11 +80,11 @@ export const rules = reactive<FormRules>({
     {
       required: true,
       validator(rules: any, value: string) {
-        const phone_grep = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+        const phoneRegex = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
         if (!value) {
           return new Error("请输入手机号码");
         }
-        if (!phone_grep.test(value)) {
+        if (!phoneRegex.test(value)) {
           return new Error("请输入正确的手机号码");
         }
         return true;

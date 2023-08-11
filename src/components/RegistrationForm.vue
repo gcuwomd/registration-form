@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, defineProps } from "vue";
+import { reactive, ref, defineProps, watch } from "vue";
 import type {
   FormInstance,
   UploadInstance,
@@ -108,7 +108,6 @@ import { baseAxios } from "../const";
 const formSize = ref("default");
 const forms = ref<FormInstance>();
 const upload = ref<UploadInstance>();
-// const uploadData = ref({});
 const form = reactive<IApply>({
   id: null,
   username: null,
@@ -123,6 +122,21 @@ const form = reactive<IApply>({
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
+// 上传文件
+const onChange: UploadProps["onExceed"] = (files: any) => {
+  upload.value!.clearFiles();
+  const file = files[0] as UploadRawFile;
+  file.uid = genFileId();
+  upload.value!.handleStart(file);
+};
+const uploadData = ref({
+  id: form.id,
+});
+// 监听“form”上的更改，发生更改时用新值更新“uploadData.value”对象的“id”属性
+watch(form, (newValue) => {
+  uploadData.value.id = newValue.id;
+});
+// 提交
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid: any, fields: any) => {
@@ -158,15 +172,6 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
     }
   });
 };
-const onChange: UploadProps["onExceed"] = (files: any) => {
-  upload.value!.clearFiles();
-  const file = files[0] as UploadRawFile;
-  file.uid = genFileId();
-  upload.value!.handleStart(file);
-};
-const uploadData = ref({
-  id: form.id,
-});
 </script>
 
 <style>
