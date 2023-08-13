@@ -70,50 +70,21 @@
       <el-space vertical>
         <el-upload
           ref="upload"
+          action="http://43.139.117.216:8100/putPhoto"
           :on-exceed="onChange"
           :data="uploadData"
           multiple
-          :file-list="fileList"
-          :on-change="fileChange"
-          :on-remove="fileRemove"
+          v-model:file-list="fileList"
           :auto-upload="false"
-          action="http://43.139.117.216:8100/putPhoto"
+          list-type="picture-card"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handleRemove"
+          :on-change="fileChange"
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
         >
           <!-- <el-button>上传文件</el-button> -->
           <el-icon><Plus /></el-icon>
-          <template #file="{ file }">
-            <div>
-              <img
-                class="el-upload-list__item-thumbnail"
-                :src="file.url"
-                alt=""
-              />
-              <span class="el-upload-list__item-actions">
-                <span
-                  class="el-upload-list__item-preview"
-                  @click="handlePictureCardPreview(file)"
-                >
-                  <el-icon><zoom-in /></el-icon>
-                </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleDownload(file)"
-                >
-                  <el-icon><Download /></el-icon>
-                </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleRemove(file)"
-                >
-                  <el-icon><Delete /></el-icon>
-                </span>
-              </span>
-            </div>
-          </template>
         </el-upload>
         <el-dialog v-model="dialogVisible">
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
@@ -139,35 +110,19 @@ import type {
   UploadInstance,
   UploadProps,
   UploadRawFile,
+  UploadFile,
+  UploadUserFile
 } from "element-plus";
-import { genFileId } from "element-plus";
+import { genFileId, ElMessage } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
 import { baseAxios } from "../const";
-import { ElMessage } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
 
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
-
-import type { UploadFile } from 'element-plus'
-
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-const disabled = ref(false)
-
-const handleRemove = (file: UploadFile) => {
-  console.log(file)
-}
-
-const handlePictureCardPreview = (file: UploadFile) => {
-  dialogImageUrl.value = file.url!
-  dialogVisible.value = true
-}
-
-const handleDownload = (file: UploadFile) => {
-  console.log(file)
-}
-
+const fileList = ref<UploadUserFile[]>([]);
+const dialogImageUrl = ref('');
+const dialogVisible = ref(false);
 const formSize = ref("default");
 const forms = ref<FormInstance>();
 const upload = ref<UploadInstance>();
@@ -185,24 +140,21 @@ const form = reactive<IApply>({
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-// // 检测文件变动获取文件
-// function fileChange(file, fileList) {
-//     upload.fileList = fileList;
-//   }
-// // 检测文件删除
-// function fileRemove(file, fileList) {
-//     upload.fileList = fileList;
-//   }
-
-// 上传文件
-const onChange: UploadProps["onExceed"] = (files: any) => {
-  upload.value!.clearFiles();
-  for (const i in files) {
-    const file = files[i] as UploadRawFile;
-    file.uid = genFileId();
-    upload.value!.handleStart(file);
+// 检测文件变动获取文件
+function fileChange(file, fileList) {
+    upload.fileList = fileList;
   }
-};
+// 上传文件
+// const onChange: UploadProps["onExceed"] = (files: any) => {
+//   upload.value!.clearFiles();
+//   for (const i in fileList) {
+//     const file = fileList[i] as UploadRawFile;
+//     file.uid = genFileId();
+//     upload.value!.handleStart(file);
+//   }
+// };
+
+// 上传时除file外的额外参数
 const uploadData = ref({
   id: form.id,
 });
@@ -210,6 +162,16 @@ const uploadData = ref({
 watch(form, (newValue) => {
   uploadData.value.id = newValue.id;
 });
+//点击删除按钮
+const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles);
+};
+// 点击加号上传文件
+const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!;
+  dialogVisible.value = true;
+};
+
 // 提交
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -243,21 +205,9 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
         });
       });
       upload.value!.submit();
-      // let formData = new FormData();  //  将文件封装进FormData
-      //     upload.fileList.forEach(file => {
-      //       formData.append('file', file.raw)
-      //     })
-      //  	formData.append("属性名",“你想附带的数据”) //附带数据
-      //     // 调用上传接口
-      //     importFile(formData).then((res) => {
-      //       //手动上传无法触发成功或失败的钩子函数，因此需要手动调用
-      //       this.upSuccess(res)
-      //     }, (err) => {
-      //       this.upError(err)
-      //     })
     } else {
       // 校验失败
-      console.log("报名失败！", fields);
+      ElMessage.error('报名失败！')
     }
   });
 };
