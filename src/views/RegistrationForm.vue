@@ -83,7 +83,6 @@
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
         >
-          <!-- <el-button>上传文件</el-button> -->
           <el-icon><Plus /></el-icon>
         </el-upload>
         <el-dialog v-model="dialogVisible">
@@ -140,19 +139,6 @@ const form = reactive<IApply>({
 const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
-// 检测文件变动获取文件
-function fileChange(file, fileList) {
-    upload.fileList = fileList;
-  }
-// 上传文件
-// const onChange: UploadProps["onExceed"] = (files: any) => {
-//   upload.value!.clearFiles();
-//   for (const i in fileList) {
-//     const file = fileList[i] as UploadRawFile;
-//     file.uid = genFileId();
-//     upload.value!.handleStart(file);
-//   }
-// };
 
 // 上传时除file外的额外参数
 const uploadData = ref({
