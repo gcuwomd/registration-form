@@ -1,10 +1,10 @@
 <template >
-  <el-form ref="forms" :model="form" :rules="rules" label-position="top">
+  <el-form ref="forms" :model="form" :rules="rules" scroll-to-error="true" label-position="top">
     <el-form-item label="学号" prop="id">
-      <el-input v-model="form.id" placeholder="请输入学号"></el-input>
+      <el-input v-model="form.id" placeholder="请输入学号" clearable></el-input>
     </el-form-item>
     <el-form-item label="姓名" prop="username">
-      <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
+      <el-input v-model="form.username" placeholder="请输入姓名" clearable></el-input>
     </el-form-item>
     <el-form-item label="性别" prop="gender">
       <el-radio-group v-model="form.gender">
@@ -13,7 +13,7 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="学院" prop="college">
-      <el-select v-model="form.college" placeholder="请选择学院">
+      <el-select v-model="form.college" placeholder="请选择学院" filterable>
         <el-option
           v-for="option in collegeOptions"
           :Key="option.value"
@@ -23,7 +23,7 @@
       </el-select>
     </el-form-item>
     <el-form-item label="专业" prop="major">
-      <el-input v-model="form.major" placeholder="请输入专业"></el-input>
+      <el-input v-model="form.major" placeholder="请输入专业" clearable></el-input>
     </el-form-item>
     <el-form-item label="第一意向部门" prop="firstIntention">
       <el-select v-model="form.firstIntention" placeholder="请选择第一意向部门">
@@ -52,14 +52,16 @@
     </el-form-item>
 
     <el-form-item label="联系电话" prop="phone">
-      <el-input v-model="form.phone" placeholder="请输入联系电话"></el-input>
+      <el-input v-model="form.phone" placeholder="请输入联系电话" clearable></el-input>
     </el-form-item>
     <el-form-item label="自我介绍" prop="introduction">
       <el-input
         type="textarea"
         v-model="form.introduction"
+        :autosize="{ minRows: 3, maxRows: 100 }"
         minlength="10"
         maxlength="255"
+        show-word-limit
         placeholder="用不少于10个字符的一段话介绍一下自己吧~"
       ></el-input>
     </el-form-item>
@@ -108,7 +110,6 @@ import type {
   FormInstance,
   UploadInstance,
   UploadProps,
-  UploadRawFile,
   UploadFile,
   UploadUserFile
 } from "element-plus";
@@ -161,7 +162,7 @@ const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
 // 提交
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid: any, fields: any) => {
+  await formEl.validate((valid: any, object: any) => {
     if (valid) {
       // 校验成功
       const volunteer = [
@@ -192,7 +193,6 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       });
       upload.value!.submit();
     } else {
-      // 校验失败
       ElMessage.error('报名失败！')
     }
   });
