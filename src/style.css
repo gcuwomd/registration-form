@@ -1,35 +1,5 @@
-body {
-  background-image: linear-gradient(
-    125deg,
-    #d9e6f1,
-    #dff8e9,
-    #dcedf9,
-    #f5edf8,
-    #faf0f8
-  );
-  background-size: 400%;
-  animation: bgmove 20s;
-  animation-iteration-count: infinite;
-}
-/* 关键帧动画 */
-@keyframes bgmove {
-  /* 动画开始时关键帧 */
-  0% {
-    background-position: 0% 50%;
-  }
-  /* 动画进行到一半时的关键帧 */
-  50% {
-    background-position: 100% 50%;
-  }
-  /* 动画结束时关键帧 */
-  100% {
-    background-position: 0% 50%;
-  }
-}
 #app {
   padding: 0px 20px;
-  backdrop-filter: blur(15px);
-  /* box-shadow: 0 0 10px #333; */
 }
 h2 {
   display: flex;

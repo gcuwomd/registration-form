@@ -11,6 +11,3 @@ import RegistrationForm from "./views/RegistrationForm.vue";
     <RegistrationForm></RegistrationForm>
   </div>
 </template>
-
-<style scoped>
-</style>

@@ -73,7 +73,7 @@
         <el-upload
           ref="upload"
           action="http://43.139.117.216:8100/putPhoto"
-          :on-exceed="onChange"
+          @exceed="onChange"
           :data="uploadData"
           multiple
           v-model:file-list="fileList"
