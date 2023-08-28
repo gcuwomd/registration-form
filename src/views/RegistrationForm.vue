@@ -158,6 +158,7 @@ const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
 // 点击加号上传文件
 const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!;
+  
   dialogVisible.value = true;
 };
 
@@ -187,14 +188,16 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
         gender: form.gender,
         volunteer: volunteer,
       };
-      baseAxios.post("/user/register", formdata).then(() => {
+      baseAxios.post("/user/register", formdata).then((res) => {
         ElMessage({
           message: "报名成功！",
           type: "success",
-        }),
+        })
+        if(res.data.code===200){
         route.push('/welcome');
+        }
       });
-      upload.value!.submit();
+      // upload.value!.submit();
     } else {
       ElMessage.error('报名失败！')
     }
