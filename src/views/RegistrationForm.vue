@@ -15,7 +15,7 @@
     <el-form-item label="学院" prop="college">
       <el-select v-model="form.college" placeholder="请选择学院" filterable>
         <el-option
-          v-for="option in collegeOptions"
+          v-for="option in collegeOption"
           :Key="option.value"
           :label="option.label"
           :value="option.value"
@@ -73,7 +73,6 @@
         <el-upload
           ref="upload"
           action="http://43.139.117.216:8100/putPhoto"
-          @exceed="onChange"
           :data="uploadData"
           multiple
           v-model:file-list="fileList"
@@ -81,7 +80,6 @@
           list-type="picture-card"
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
-          :on-change="fileChange"
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
         >
@@ -94,38 +92,42 @@
     </el-form-item>
     <el-form-item>
       <el-button
-        style="width: 100%"
+        style="width: 90%"
         @click="onSubmit(forms)"
         type="primary"
-        :disabled="btnDisabled"
         >提交</el-button
       >
     </el-form-item>
+    <!-- <el-button
+        style="width: 10%"
+        type="primary"
+        >重置</el-button
+      > -->
   </el-form>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, defineProps, watch } from "vue";
-import type {
-  FormInstance,
-  UploadInstance,
-  UploadProps,
-  UploadFile,
-  UploadUserFile
-} from "element-plus";
-import { genFileId, ElMessage } from "element-plus";
+import { reactive, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 import { IApply } from "../types/index";
 import { collegeOptions, sectionOptions } from "../assets/ts/options";
 import { rules } from "../assets/ts/rules";
 import { baseAxios } from "../const";
 import { Plus } from "@element-plus/icons-vue";
+import type {
+  FormInstance,
+  UploadInstance,
+  UploadProps,
+  UploadUserFile
+} from "element-plus";
 
 const fileList = ref<UploadUserFile[]>([]);
 const dialogImageUrl = ref('');
 const dialogVisible = ref(false);
-const formSize = ref("default");
 const forms = ref<FormInstance>();
 const upload = ref<UploadInstance>();
+const route = useRouter();
 const form = reactive<IApply>({
   id: null,
   username: null,
@@ -162,7 +164,7 @@ const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
 // 提交
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid: any, object: any) => {
+  await formEl.validate((valid: any) => {
     if (valid) {
       // 校验成功
       const volunteer = [
@@ -189,7 +191,8 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
         ElMessage({
           message: "报名成功！",
           type: "success",
-        });
+        }),
+        route.push('/welcome');
       });
       upload.value!.submit();
     } else {

@@ -1,15 +1,9 @@
 <template>
-  <div>
-    <h2>
-      <span>网信委招新报名系统</span>
-      <img src="./assets/logo.png" alt="" />
-    </h2>
     <div class="welcome">
       <div class="i-twemoji:slightly-smiling-face text-gray-600 text-8xl mx-auto"></div>
       <span class="text-gradient">网信委大家庭期待你的加入</span>
     <el-link :underline="false" href="" type="succes">重新报名</el-link>
     </div>
-  </div>
 </template>
 <style scoped>
 .text-gradient {
