@@ -52,18 +52,18 @@ export const collegeOptions: Array<IOption> = [
 export const sectionOptions: Array<IOption> = [
   {
     label: "网站运维部",
-    value: "1",
+    value: "89904669e3354e83",
   },
   {
     label: "信息化运维部",
-    value: "2",
+    value: "714e7a5fc5c14302",
   },
   {
     label: "网络运维部",
-    value: "3",
+    value: "f3538485ba2f4ca1",
   },
   {
     label: "行政秘书部",
-    value: "4",
+    value: "007b9c8f5d6b4560",
   },
 ];
