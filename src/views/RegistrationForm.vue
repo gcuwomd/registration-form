@@ -78,8 +78,9 @@
           v-model:file-list="fileList"
           :auto-upload="false"
           list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove"
+          @preview="handlePictureCardPreview"
+          @remove="handleRemove"
+          @change="fileChange"
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
         >
@@ -92,15 +93,13 @@
     </el-form-item>
     <el-form-item>
       <el-button
-        style="width: 90%"
+        style="width: 100%"
         @click="onSubmit(forms)"
         type="primary"
         >提交</el-button
       >
     </el-form-item>
     <!-- <el-button
-        style="width: 10%"
-        type="primary"
         >重置</el-button
       > -->
   </el-form>
@@ -158,7 +157,6 @@ const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
 // 点击加号上传文件
 const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url!;
-  
   dialogVisible.value = true;
 };
 
@@ -189,20 +187,22 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
         volunteer: volunteer,
       };
       baseAxios.post("/user/register", formdata).then((res) => {
-        ElMessage({
+        if(res.data.code===200){
+          ElMessage({
           message: "报名成功！",
           type: "success",
         })
-        if(res.data.code===200){
         route.push('/welcome');
         }
       });
-      // upload.value!.submit();
+      // 手动上传图片
+      upload.value!.submit();
     } else {
       ElMessage.error('报名失败！')
     }
   });
 };
+
 </script>
 
 <style>
