@@ -80,7 +80,6 @@
           list-type="picture-card"
           @preview="handlePictureCardPreview"
           @remove="handleRemove"
-          @change="fileChange"
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
         >
