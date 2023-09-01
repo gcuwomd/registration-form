@@ -4,7 +4,7 @@ export const rules = reactive<FormRules>({
   id: [
     {
       required: true,
-      validator(rules: any, value: string) {
+      validator(_rules: any, value: string) {
         const idRegex = /^\d{12}$/;
         if (!value) {
           return new Error("请输入学号");
@@ -19,7 +19,7 @@ export const rules = reactive<FormRules>({
   username: [
     {
       required: true,
-      validator(rules: any, value: string) {
+      validator(_rules: any, value: string) {
         const nameRegex = /^[\u4e00-\u9fa5]+$/;
         if (!value) {
           return new Error("请输入姓名");
@@ -49,7 +49,7 @@ export const rules = reactive<FormRules>({
   major: [
     {
       required: true,
-      validator(rules: any, value: string) {
+      validator(_rules: any, value: string) {
         const majorRegex = /^[\u4e00-\u9fa5]+$/;
         if (!value) {
           return new Error("请输入专业");
@@ -79,7 +79,7 @@ export const rules = reactive<FormRules>({
   phone: [
     {
       required: true,
-      validator(rules: any, value: string) {
+      validator(_rules: any, value: string) {
         const phoneRegex = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
         if (!value) {
           return new Error("请输入手机号码");
@@ -95,7 +95,7 @@ export const rules = reactive<FormRules>({
   introduction: [
     {
       required: true,
-      validator(rules: any, value: string) {
+      validator(_rules: any, value: string) {
         if (!value) {
           return new Error("简单地自我介绍一下吧~");
         } else if (value.length < 10) {

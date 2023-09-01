@@ -43,7 +43,7 @@
       <el-select v-model="form.firstIntention" placeholder="请选择第一意向部门">
         <el-option
           v-for="option in firstSectionOption"
-          :Key="option.value"
+          :key="option.value"
           :label="option.label"
           :value="option.value"
           :disabled="option.value == form.secondIntention"
@@ -57,7 +57,7 @@
       >
         <el-option
           v-for="option in secondSectionOption"
-          :Key="option.value"
+          :key="option.value"
           :label="option.label"
           :value="option.value"
           :disabled="option.value == form.firstIntention"
@@ -90,7 +90,7 @@
       <el-space vertical>
         <el-upload
           ref="upload"
-          action="http://43.139.117.216:8100/putPhoto"
+          action="https://pass.bamdev.space/putPhoto"
           :data="uploadData"
           multiple
           v-model:file-list="fileList"
@@ -173,8 +173,8 @@ const load = async () => {
   form.college = data.college;
   form.phone = data.phone;
   form.gender = data.gender;
-  form.firstIntention = data.volunteer[0].departmentName;
-  form.secondIntention = data.volunteer[1].departmentName;
+  form.firstIntention = data.volunteer[0].volunteerDepartment;
+  form.secondIntention = data.volunteer[1].volunteerDepartment;
 };
 //加载页面时，组件挂载完成后执行
 onMounted(async () => {
@@ -216,7 +216,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       ];
       const formdata = {
         id: form.id,
-        username: form.username,
+        username: form.username, 
         introduction: form.introduction,
         major: form.major,
         college: form.college,
@@ -233,7 +233,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
           route.push("/welcome");
         }
       });
-      // upload.value!.submit();
+      upload.value!.submit();
     } else {
       ElMessage.error("报名失败！");
     }
@@ -248,7 +248,7 @@ const beforeUpload = async (file: any) => {
       resolve(file);
     }
     console.log("file", file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
-    imageConversion.compressAccurately(file, 1024 * 3).then((res) => {
+    imageConversion.compressAccurately(file, 700).then((res) => {
       console.log("res", res);
       resolve(res);
     });
