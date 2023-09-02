@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 const routes: RouteRecordRaw[] = [
   {
     // '/' 表示本目录为根目录，根目录是路由启动时跳转的页面
@@ -12,6 +12,6 @@ const routes: RouteRecordRaw[] = [
 ]
 const router = createRouter({
   routes,
-  history: createWebHistory()
+  history: createWebHashHistory()
 });
 export default router

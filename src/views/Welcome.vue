@@ -2,7 +2,7 @@
     <div class="welcome">
       <div class="i-twemoji:slightly-smiling-face text-gray-600 text-8xl mx-auto"></div>
       <span class="text-gradient">网信委大家庭期待你的加入</span>
-    <el-link :underline="false" href="" type="succes">重新报名</el-link>
+    <el-link :underline="false" href="" type="succes" @click="()=>{$router.push('/')}">重新报名</el-link>
     </div>
 </template>
 <style scoped>

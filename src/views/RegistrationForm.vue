@@ -1,10 +1,20 @@
-<template >
-  <el-form ref="forms" :model="form" :rules="rules" scroll-to-error="true" label-position="top">
+<template>
+  <el-form
+    ref="forms"
+    :model="form"
+    :rules="rules"
+    scroll-to-error="true"
+    label-position="top"
+  >
     <el-form-item label="学号" prop="id">
       <el-input v-model="form.id" placeholder="请输入学号" clearable></el-input>
     </el-form-item>
     <el-form-item label="姓名" prop="username">
-      <el-input v-model="form.username" placeholder="请输入姓名" clearable></el-input>
+      <el-input
+        v-model="form.username"
+        placeholder="请输入姓名"
+        clearable
+      ></el-input>
     </el-form-item>
     <el-form-item label="性别" prop="gender">
       <el-radio-group v-model="form.gender">
@@ -13,7 +23,7 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="学院" prop="college">
-      <el-select v-model="form.college" placeholder="请选择学院" filterable>
+      <el-select v-model="form.college" placeholder="请选择学院">
         <el-option
           v-for="option in collegeOption"
           :Key="option.value"
@@ -23,13 +33,17 @@
       </el-select>
     </el-form-item>
     <el-form-item label="专业" prop="major">
-      <el-input v-model="form.major" placeholder="请输入专业" clearable></el-input>
+      <el-input
+        v-model="form.major"
+        placeholder="请输入专业"
+        clearable
+      ></el-input>
     </el-form-item>
     <el-form-item label="第一意向部门" prop="firstIntention">
       <el-select v-model="form.firstIntention" placeholder="请选择第一意向部门">
         <el-option
           v-for="option in firstSectionOption"
-          :Key="option.value"
+          :key="option.value"
           :label="option.label"
           :value="option.value"
           :disabled="option.value == form.secondIntention"
@@ -43,7 +57,7 @@
       >
         <el-option
           v-for="option in secondSectionOption"
-          :Key="option.value"
+          :key="option.value"
           :label="option.label"
           :value="option.value"
           :disabled="option.value == form.firstIntention"
@@ -52,7 +66,11 @@
     </el-form-item>
 
     <el-form-item label="联系电话" prop="phone">
-      <el-input v-model="form.phone" placeholder="请输入联系电话" clearable></el-input>
+      <el-input
+        v-model="form.phone"
+        placeholder="请输入联系电话"
+        clearable
+      ></el-input>
     </el-form-item>
     <el-form-item label="自我介绍" prop="introduction">
       <el-input
@@ -72,7 +90,7 @@
       <el-space vertical>
         <el-upload
           ref="upload"
-          action="http://43.139.117.216:8100/putPhoto"
+          action="https://pass.bamdev.space/putPhoto"
           :data="uploadData"
           multiple
           v-model:file-list="fileList"
@@ -82,8 +100,11 @@
           @remove="handleRemove"
           accept=".jpeg,.png,.jpg,.bmp,.gif"
           :max="1"
+          :before-upload="beforeUpload"
         >
-          <el-icon><Plus /></el-icon>
+          <el-icon>
+            <Plus />
+          </el-icon>
         </el-upload>
         <el-dialog v-model="dialogVisible">
           <img w-full :src="dialogImageUrl" alt="Preview Image" />
@@ -105,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { IApply } from "../types/index";
@@ -117,11 +138,13 @@ import type {
   FormInstance,
   UploadInstance,
   UploadProps,
-  UploadUserFile
+  UploadUserFile,
 } from "element-plus";
+import { acquire } from "../assets/ts/acquire";
+import imageConversion from "image-conversion";
 
 const fileList = ref<UploadUserFile[]>([]);
-const dialogImageUrl = ref('');
+const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 const forms = ref<FormInstance>();
 const upload = ref<UploadInstance>();
@@ -141,6 +164,24 @@ const collegeOption = reactive(collegeOptions);
 const firstSectionOption = reactive(sectionOptions);
 const secondSectionOption = reactive(sectionOptions);
 
+//加载过的页面信息
+const load = async () => {
+  console.log((await acquire()).data.data);
+  const data = (await acquire()).data.data;
+  form.username = data.username;
+  form.id = data.id;
+  form.introduction = data.introduction;
+  form.major = data.major;
+  form.college = data.college;
+  form.phone = data.phone;
+  form.gender = data.gender;
+  form.firstIntention = data.volunteer[0].volunteerDepartment;
+  form.secondIntention = data.volunteer[1].volunteerDepartment;
+};
+//加载页面时，组件挂载完成后执行
+onMounted(async () => {
+  await load();
+});
 // 上传时除file外的额外参数
 const uploadData = ref({
   id: form.id,
@@ -168,16 +209,16 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       const volunteer = [
         {
           level: "1",
-          volunteer: form.firstIntention,
+          departmentId: form.firstIntention,
         },
         {
           level: "2",
-          volunteer: form.secondIntention,
+          departmentId: form.secondIntention,
         },
       ];
       const formdata = {
         id: form.id,
-        username: form.username,
+        username: form.username, 
         introduction: form.introduction,
         major: form.major,
         college: form.college,
@@ -197,11 +238,24 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       // 手动上传图片
       upload.value!.submit();
     } else {
-      ElMessage.error('报名失败！')
+      ElMessage.error("报名失败！");
     }
   });
 };
-
+//压缩上传图片
+const beforeUpload = async (file: any) => {
+  return new Promise((resolve) => {
+    let isLt2M = file.size / 1024 / 1024 < 2; // 判定图片大小是否小于2MB
+    if (isLt2M) {
+      resolve(file);
+    }
+    console.log("file", file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
+    imageConversion.compressAccurately(file, 700).then((res) => {
+      console.log("res", res);
+      resolve(res);
+    });
+  });
+};
 </script>
 
 <style>
